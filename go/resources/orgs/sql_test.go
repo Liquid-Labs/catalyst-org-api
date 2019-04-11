@@ -37,7 +37,7 @@ func TestOrgsDBIntegration(t *testing.T) {
   }
 }
 
-const someOtherId=`4BE66BE5-2A62-11E9-B987-42010A8003FF`
+const someOrgID=`E9EB036A-0194-4AD4-B598-2412FB9C8F5B`
 
 func setupDB() {
   sqldb.RegisterSetup(entities.SetupDB, locations.SetupDB, users.SetupDB, /*orgs.*/SetupDB)
@@ -49,15 +49,15 @@ func testOrgDBSetup(t *testing.T) {
 }
 
 func testOrgGet(t *testing.T) {
-  org, err := GetOrg(someOtherId, context.Background())
+  org, err := GetOrg(someOrgID, context.Background())
   require.NoError(t, err, `Unexpected error getting Org.`)
-  require.NotNil(t, org, `Unexpected nil Org on create (with no error).`)
-  assert.Equal(t, `Jane Doe`, org.DisplayName.String, `Unexpected display name.`)
+  require.NotNil(t, org, `Unexpected nil Org on create (with no error); check ID.`)
+  assert.Equal(t, `Some Org`, org.DisplayName.String, `Unexpected display name.`)
   assert.Equal(t, `janedoe@test.com`, org.Email.String, `Unexpected email.`)
   assert.Equal(t, `555-555-1111`, org.Phone.String, `Unexpected phone.`)
   assert.Equal(t, false, org.Active.Bool, `Unexpected active value.`)
   assert.NotEmpty(t, org.Id, `Unexpected empty ID.`)
-  assert.Equal(t, someOtherId, org.PubId.String, `Unexpected public id.`)
+  assert.Equal(t, someOrgID, org.PubId.String, `Unexpected public id.`)
 }
 
 func testOrgCreate(t *testing.T) {
@@ -73,8 +73,9 @@ func testOrgCreate(t *testing.T) {
 }
 
 func testOrgUpdate(t *testing.T) {
-  someOtherOrg, err := GetOrg(someOtherId, context.Background())
+  someOtherOrg, err := GetOrg(someOrgID, context.Background())
   require.NoError(t, err, `Unexpected error getting Org.`)
+  require.NotNil(t, someOtherOrg, `Unexpected nil value retrieving org (with no error); check ID.`)
   someOtherOrg.SetActive(true)
   someOtherOrg.SetDisplayName(`Jane P. Doe`)
   someOtherOrg.SetEmail(`janepdoe@test.com`)
@@ -91,21 +92,21 @@ func testOrgUpdate(t *testing.T) {
 }
 
 func testOrgGetInTxn(t *testing.T) {
-  someOtherOrg, restErr := GetOrg(someOtherId, context.Background())
+  someOtherOrg, restErr := GetOrg(someOrgID, context.Background())
   assert.NoError(t, restErr, `Unexpected error getting org.`)
   txn, _ := sqldb.DB.Begin()
   orig := someOtherOrg.Clone()
   // if we get in a txn, we should see the changes
   someOtherOrg.SetPhone(`555-555-0003`)
   org, restErr := UpdateOrgInTxn(someOtherOrg, context.Background(), txn)
-  someOtherTxn, restErr := GetOrgInTxn(someOtherId, context.Background(), txn)
+  someOtherTxn, restErr := GetOrgInTxn(someOrgID, context.Background(), txn)
   assert.Equal(t, *org, *someOtherTxn, `Update-Org and Get-Org do not match.`)
   assert.Equal(t, someOtherOrg.Phone, someOtherTxn.Phone, `Did not see change while getting in txn.`)
   assert.NotEqual(t, someOtherOrg.Phone, orig.Phone, `Phone number not changed.`)
-  someOtherNoTxn, restErr := GetOrg(someOtherId, context.Background())
+  someOtherNoTxn, restErr := GetOrg(someOrgID, context.Background())
   assert.Equal(t, orig.Phone, someOtherNoTxn.Phone, `Non-txn org reflects changes.`)
   assert.NoError(t, txn.Commit(), `Error attempting commit.`)
-  someOtherFinish, _ := GetOrg(someOtherId, context.Background())
+  someOtherFinish, _ := GetOrg(someOrgID, context.Background())
   assert.Equal(t, *someOtherTxn, *someOtherFinish, `Post-commit Orgs didn't match.`)
 }
 

@@ -20,7 +20,7 @@ type OrgSummary struct {
   Summary       nulls.String `json:"summary"`
   Email         nulls.String `json:"email"`
   Phone         nulls.String `json:"phone,string"`
-  Homepage       nulls.String `json:"webpage"`
+  Homepage      nulls.String `json:"homepage"`
   LogoURL       nulls.String `json:"logoURL"`
 }
 
@@ -72,8 +72,11 @@ type Org struct {
 }
 
 func (o *Org) Clone() *Org {
-  newChangeDesc := make([]string, len(o.ChangeDesc))
-  copy(newChangeDesc, o.ChangeDesc)
+  var newChangeDesc []string = nil
+  if o.ChangeDesc != nil {
+    newChangeDesc = make([]string, len(o.ChangeDesc))
+    copy(newChangeDesc, o.ChangeDesc)
+  }
 
   return &Org{
     *o.OrgSummary.Clone(),

@@ -283,7 +283,7 @@ func UpdateOrgInTxn(o *Org, ctx context.Context, txn *sql.Tx) (*Org, rest.RestEr
 }
 
 // TODO: enable update of AuthID
-const updateOrgStatement = `UPDATE orgs o JOIN users u ON u.id=o.id JOIN entities e ON o.id=e.id SET u.active=?, u.legal_id, u.legal_id_type, o.display_name=?, o.summary=?, o.phone=?, o.email=?, o.homepage=?, o.logo_url=?, e.last_updated=0 WHERE e.pub_id=?`
+const updateOrgStatement = `UPDATE orgs o JOIN users u ON u.id=o.id JOIN entities e ON o.id=e.id SET u.active=?, u.legal_id=?, u.legal_id_type=?, o.display_name=?, o.summary=?, o.phone=?, o.email=?, o.homepage=?, o.logo_url=?, e.last_updated=0 WHERE e.pub_id=?`
 var createOrgQuery, updateOrgQuery, getOrgQuery, getOrgByAuthIdQuery, getOrgByIdQuery *sql.Stmt
 func SetupDB(db *sql.DB) {
   var err error
