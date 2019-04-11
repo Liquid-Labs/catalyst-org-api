@@ -1,0 +1,90 @@
+{
+  "name": "@liquid-labs/catalyst-orgs-api",
+  "version": "1.0.0-prototype.0",
+  "description": "API for managing organizations (clubs, businesses, etc.)",
+  "main": "./dist/index.js",
+  "module": "./dist/index.es.js",
+  "files": [
+    "dist/",
+    "go/",
+    "data/",
+    "go.mod",
+    "go.sum",
+    ".catalyst"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf ./dist/* && mkdir -p ./dist",
+    "build": "catalyst-scripts build",
+    "pretest": "catalyst-scripts pretest",
+    "test": "catalyst-scripts test",
+    "lint": "catalyst-scripts lint",
+    "lint-fix": "catalyst-scripts lint-fix",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liquid-Labs/catalyst-orgs-api.git"
+  },
+  "author": "Zane Rockenbaugh <zane@liquid-labs.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Liquid-Labs/catalyst-orgs-api/issues"
+  },
+  "homepage": "https://github.com/Liquid-Labs/catalyst-orgs-api#readme",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@liquid-labs/catalyst-core-api": "^1.0.0-prototype.7",
+    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.19",
+    "@liquid-labs/regex-repo": "^1.0.0-alpha.3",
+    "@liquid-labs/restful-paths": "^1.0.0-prototype.2",
+    "lodash.omit": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "moment-timezone": "^0.5.23",
+    "normalizr": "^3.3.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@liquid-labs/catalyst-core-api": "^1.0.0-prototype.6",
+    "@liquid-labs/regex-repo": "^1.0.0-alpha.3",
+    "lodash.omit": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "moment-timezone": "^0.5.23",
+    "normalizr": "^3.3.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
+  },
+  "_catalystRequiresService": [
+    {
+      "iface": "sql-mysql",
+      "params-req": [],
+      "params-opt": [],
+      "config-const": []
+    },
+    {
+      "iface": "rest",
+      "params-req": [
+        "CLOUDSQL_INSTANCE_NAME",
+        "CLOUDSQL_CONNECTION_PROT",
+        "CLOUDSQL_CONNECTION_NAME",
+        "CLOUDSQL_CREDS",
+        "CLOUDSQL_DB",
+        "CLOUDSQL_USER",
+        "CLOUDSQL_PASSWORD",
+        "GCP_PROJECT_ID",
+        "FIREBASE_DB_URL",
+        "FIREBASE_CREDS_FILE"
+      ],
+      "params-opt": [],
+      "config-const": {
+        "ADD_GO_APP_ORGS": "@liquid-labs/catalyst-orgs-api:go/app.yaml"
+      }
+    }
+  ],
+  "dependencies": {}
+}
