@@ -23,13 +23,16 @@ var trivialOrgSummary = &OrgSummary{
       nulls.NewInt64(2),
     },
     nulls.NewString(`xzc098`),
+    nulls.NewString(`555-55-5555`),
+    nulls.NewString(`SSN`),
     nulls.NewBool(false),
   },
   nulls.NewString(`displayName`),
+  nulls.NewString(`A great company.`),
   nulls.NewString(`foo@test.com`),
   nulls.NewString(`555-555-9999`),
-  nulls.NewString(`555-555-9998`),
-  nulls.NewString(`http://foo.com/avatar`),
+  nulls.NewString(`https://google.com`),
+  nulls.NewString(`http://foo.com/logo`),
 }
 
 func TestOrgSummaryClone(t *testing.T) {
@@ -38,12 +41,13 @@ func TestOrgSummaryClone(t *testing.T) {
   clone.Id = nulls.NewInt64(3)
   clone.PubId = nulls.NewString(`b`)
   clone.LastUpdated = nulls.NewInt64(4)
-  clone.Active = nulls.NewBool(true)
-  clone.DisplayName = nulls.NewString(`different name`)
-  clone.Email = nulls.NewString(`blah@test.com`)
-  clone.Phone = nulls.NewString(`555-555-9997`)
-  clone.PhoneBackup = nulls.NewString(`555-555-9996`)
-  clone.PhotoURL = nulls.NewString(`http://bar.com/image`)
+  clone.SetActive(true)
+  clone.SetDisplayName(`different name`)
+  clone.SetSummary(`A new summary.`)
+  clone.SetEmail(`blah@test.com`)
+  clone.SetPhone(`555-555-9997`)
+  clone.SetHomepage(`https://bar.com`)
+  clone.SetLogoURL(`http://bar.com/image`)
 
   oReflection := reflect.ValueOf(trivialOrgSummary).Elem()
   cReflection := reflect.ValueOf(clone).Elem()
@@ -52,8 +56,8 @@ func TestOrgSummaryClone(t *testing.T) {
       t,
       oReflection.Field(i).Interface(),
       cReflection.Field(i).Interface(),
-      `Fields '%s' unexpectedly match.`,
-      oReflection.Type().Field(i),
+      `Fields '%s' unexpectedly match with: %s`,
+      oReflection.Type().Field(i).Name, oReflection.Field(i).Interface(),
     )
   }
 }
@@ -88,10 +92,11 @@ func TestOrgClone(t *testing.T) {
   clone.LastUpdated = nulls.NewInt64(4)
   clone.Active = nulls.NewBool(true)
   clone.DisplayName = nulls.NewString(`different name`)
+  clone.Summary = nulls.NewString(`A new company.`)
   clone.Email = nulls.NewString(`blah@test.com`)
   clone.Phone = nulls.NewString(`555-555-9997`)
-  clone.PhoneBackup = nulls.NewString(`555-555-9996`)
-  clone.PhotoURL = nulls.NewString(`http://bar.com/image`)
+  clone.Homepage = nulls.NewString(`https://bar.com`)
+  clone.LogoURL = nulls.NewString(`http://bar.com/image`)
   clone.Addresses = locations.Addresses{
     &locations.Address{
       locations.Location{
@@ -155,7 +160,7 @@ var someOrg = &Org{}
 var decodeErr = decoder.Decode(someOrg)
 
 func TestOrgsDecode(t *testing.T) {
-  assert.NoError(t, decodeErr, "Unexpected error decoding person JSON.")
+  assert.NoError(t, decodeErr, "Unexpected error decoding org JSON.")
   assert.Equal(t, jdDisplayName, someOrg.DisplayName.String, "Unexpected display name.")
   assert.Equal(t, jdEmail, someOrg.Email.String, "Unexpected email.")
   assert.Equal(t, jdPhone, someOrg.Phone.String, "Unexpected phone.")
@@ -165,7 +170,6 @@ func TestOrgsDecode(t *testing.T) {
 func TestOrgFormatter(t *testing.T) {
   testP := &Org{OrgSummary: OrgSummary{
     Phone: nulls.NewString(`5555555555`),
-    PhoneBackup: nulls.NewString(`1234567890`),
   }}
   testP.FormatOut()
   assert.Equal(t, `555-555-5555`, testP.Phone.String)

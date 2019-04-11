@@ -83,7 +83,7 @@ func OrgsGeneralWhereGenerator(term string, params []interface{}) (string, []int
 const CommonOrgFields = `e.pub_id, e.last_updated, o.display_name, o.summary, o.phone, o.email, o.homepage, o.logo_url, u.active, u.auth_id, u.legal_id, u.legal_id_type `
 const CommonOrgsFrom = `FROM orgs o JOIN users u ON o.id=u.id JOIN entities e ON o.id=e.id `
 
-const createOrgStatement = `INSERT INTO orgs (id, legal_id, legal_id_type, display_name, summary, phone, email, homepage, logo_url) VALUES(?,?,?,?,?,?,?,?,?)`
+const createOrgStatement = `INSERT INTO orgs (id, display_name, summary, phone, email, homepage, logo_url) VALUES(?,?,?,?,?,?,?)`
 func CreateOrg(o *Org, ctx context.Context) (*Org, rest.RestError) {
   txn, err := sqldb.DB.Begin()
   if err != nil {
@@ -110,7 +110,7 @@ func CreateOrgInTxn(o *Org, ctx context.Context, txn *sql.Tx) (*Org, rest.RestEr
 
   o.Id = nulls.NewInt64(newId)
 
-	_, err = txn.Stmt(createOrgQuery).Exec(newId, o.LegalID, o.LegalIDType, o.DisplayName, o.Summary, o.Phone, o.Email, o.Homepage, o.LogoURL)
+	_, err = txn.Stmt(createOrgQuery).Exec(newId, o.DisplayName, o.Summary, o.Phone, o.Email, o.Homepage, o.LogoURL)
 	if err != nil {
     // TODO: can we do more to tell the cause of the failure? We assume it's due to malformed data with the HTTP code
     defer txn.Rollback()

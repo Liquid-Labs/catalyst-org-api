@@ -11,8 +11,8 @@ CREATE TABLE `orgs` (
   CONSTRAINT `orgs_ref_users` FOREIGN KEY ( `id` ) REFERENCES `users` ( `id` )
 );
 DELIMITER //
-CREATE TRIGGER `persons_phone_format`
-  BEFORE INSERT ON persons FOR EACH ROW
+CREATE TRIGGER `orgs_phone_format`
+  BEFORE INSERT ON orgs FOR EACH ROW
     BEGIN
       SET new.phone=(SELECT NUMERIC_ONLY(new.phone));
     END;//
