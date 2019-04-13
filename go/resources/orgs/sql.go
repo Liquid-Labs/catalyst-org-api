@@ -253,16 +253,15 @@ func UpdateOrgInTxn(o *Org, ctx context.Context, txn *sql.Tx) (*Org, rest.RestEr
     o.Addresses.CompleteAddresses(ctx)
   }
   var err error
-  var updateStmt *sql.Stmt = updateOrgQuery
   if o.Addresses != nil {
     if restErr := o.Addresses.Update(o.PubId.String, ctx, txn); restErr != nil {
       defer txn.Rollback()
       // TODO: this message could be misleading; like the org was updated, and just the addresses not
       return nil, restErr
     }
-    updateStmt = txn.Stmt(updateOrgQuery)
   }
 
+  var updateStmt *sql.Stmt = txn.Stmt(updateOrgQuery)
   _, err = updateStmt.Exec(o.Active, o.LegalID, o.LegalIDType, o.DisplayName, o.Summary, o.Phone, o.Email, o.Homepage, o.LogoURL, o.PubId)
   if err != nil {
     if txn != nil {
