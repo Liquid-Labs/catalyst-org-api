@@ -38,7 +38,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-core-api": "^1.0.0-prototype.7",
+    "@liquid-labs/catalyst-core-api": "^1.0.0-prototype.10",
     "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.19",
     "@liquid-labs/regex-repo": "^1.0.0-alpha.3",
     "@liquid-labs/restful-paths": "^1.0.0-prototype.2",
